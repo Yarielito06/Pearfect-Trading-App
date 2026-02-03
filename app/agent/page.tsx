@@ -30,8 +30,18 @@ export default function AgentPage() {
   const [prediction, setPrediction] = useState<Prediction>({
     direction: "UP",
     confidence: 0.65,
-    asOf: new Date().toISOString(),
+    asOf: "",
   })
+  const [mounted, setMounted] = useState(false)
+
+  // Set mounted state and initialize timestamp on client only
+  useEffect(() => {
+    setMounted(true)
+    setPrediction((prev) => ({
+      ...prev,
+      asOf: prev.asOf || new Date().toISOString(),
+    }))
+  }, [])
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   // Load persisted chat from localStorage
@@ -300,7 +310,7 @@ export default function AgentPage() {
 
                 {/* Timestamp */}
                 <div className="text-center text-xs text-muted-foreground">
-                  As of {new Date(prediction.asOf).toLocaleString()}
+                  {mounted && prediction.asOf ? `As of ${new Date(prediction.asOf).toLocaleString()}` : "Loading..."}
                 </div>
 
                 {/* Disclaimer */}
