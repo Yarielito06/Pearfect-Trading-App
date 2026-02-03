@@ -143,8 +143,6 @@ export function TradeSlip({ thesis }: { thesis: Thesis }) {
       }
       
       const pearMessage = await messageResponse.json();
-      console.log("[v0] Pear message response:", JSON.stringify(pearMessage, null, 2));
-      
       // Extract the timestamp from Pear's response
       const timestamp = pearMessage.timestamp;
       if (!timestamp) {
@@ -169,8 +167,6 @@ export function TradeSlip({ thesis }: { thesis: Thesis }) {
         message: pearMessage.message
       };
       
-      console.log("[v0] EIP-712 data to sign:", JSON.stringify(eip712Data, null, 2));
-      
       if (!eip712Data.domain || !eip712Data.types || !eip712Data.message) {
         throw new Error(`Invalid EIP-712 format. Keys: ${JSON.stringify(Object.keys(pearMessage))}`);
       }
@@ -180,9 +176,6 @@ export function TradeSlip({ thesis }: { thesis: Thesis }) {
         method: "eth_signTypedData_v4",
         params: [walletAddress, JSON.stringify(eip712Data)]
       }) as string;
-      
-      console.log("[v0] Signature:", signature.substring(0, 20) + "...");
-      console.log("[v0] Sending to verify with wallet:", walletAddress, "timestamp:", timestamp);
       
       // 5. Send signature + timestamp to backend to exchange for JWT token
       const verifyResponse = await fetch(`${backendUrl}/auth/verify`, {
@@ -252,8 +245,6 @@ export function TradeSlip({ thesis }: { thesis: Thesis }) {
       conviction: thesis.conviction,
       thesisType: thesis.type,
     }
-
-    console.log("[v0] Executing trade with payload:", payload)
 
     try {
       const { data, error: apiError } = await api.executeProTrade(payload)

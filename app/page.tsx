@@ -24,8 +24,7 @@ export default function LandingPage() {
   }
 
   const handleProMode = async () => {
-    // Use the variable if it exists, otherwise use your ngrok link
-    const BACKEND_URL = "https://2d1dd1c935a4.ngrok-free.app";
+    const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
     if (!BACKEND_URL) {
       setError("Backend URL not configured. Please set NEXT_PUBLIC_BACKEND_URL environment variable.")
       return
