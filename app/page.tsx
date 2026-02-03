@@ -52,54 +52,78 @@ export default function LandingPage() {
       const accounts = await provider.request({ method: "eth_requestAccounts" })
       const address = accounts[0]
 
-      // B. STEP 1: Get the signing message from backend
-     // B. STEP 1: Get the signing message from backend
-     // B. STEP 1: Get the signing message from backend
-      const msgResponse = await fetch(`${BACKEND_URL}/auth/message/${address}`, {
-        method: 'GET',
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'ngrok-skip-browser-warning': 'true' // <--- ADD THIS LINE
-        },
-        mode: 'cors'
-      })
+      // B. STEP 1: Get the EIP-712 signing message from backend
+      let msgResponse: Response;
+      try {
+        msgResponse = await fetch(`${BACKEND_URL}/auth/message/${address}`, {
+          method: 'GET',
+          headers: {
+            'Accept': 'application/json',
+            'ngrok-skip-browser-warning': 'true'
+          }
+        })
+      } catch (fetchError: any) {
+        throw new Error(`Network error: Could not reach backend at ${BACKEND_URL}. Is your ngrok tunnel running?`)
+      }
 
-if (!msgResponse.ok) {
-  const errorText = await msgResponse.text(); // Capture the actual error text
-  throw new Error(`Backend error ${msgResponse.status}: ${errorText}`);
-}
+      if (!msgResponse.ok) {
+        const errorText = await msgResponse.text();
+        throw new Error(`Backend error ${msgResponse.status}: ${errorText}`);
+      }
 
       const contentType = msgResponse.headers.get("content-type")
       if (!contentType || !contentType.includes("application/json")) {
         throw new Error("Backend returned invalid response (not JSON). Check if the backend server is running.")
       }
 
-      const msgData = await msgResponse.json()
-      const messageToSign = msgData.message
+      const pearMessage = await msgResponse.json()
+      const timestamp = pearMessage.timestamp
 
-      if (!messageToSign) {
-        throw new Error("Backend did not return a message to sign")
+      if (!timestamp) {
+        throw new Error("Backend did not return a timestamp")
       }
 
-      // C. STEP 2: Ask user to sign the message
+      // Build EIP-712 data structure for signing
+      const eip712Data = {
+        domain: pearMessage.domain,
+        types: {
+          EIP712Domain: [
+            { name: "name", type: "string" },
+            { name: "version", type: "string" },
+            { name: "chainId", type: "uint256" },
+            { name: "verifyingContract", type: "address" }
+          ],
+          ...pearMessage.types
+        },
+        primaryType: pearMessage.primaryType,
+        message: pearMessage.message
+      };
+
+      // C. STEP 2: Ask user to sign the EIP-712 message
       const signature = await provider.request({
-        method: "personal_sign",
-        params: [messageToSign, address],
+        method: "eth_signTypedData_v4",
+        params: [address, JSON.stringify(eip712Data)],
       })
 
-      // D. STEP 3: Verify with backend
-      const verifyResponse = await fetch(`${BACKEND_URL}/auth/verify`, {
-        method: "POST",
-        headers: { 
-          "Content-Type": "application/json",
-          "ngrok-skip-browser-warning": "true"
-        },
-        body: JSON.stringify({
-          wallet_address: address,
-          signature: signature,
-        }),
-      })
+      // D. STEP 3: Verify with backend (send signature + timestamp)
+      let verifyResponse: Response;
+      try {
+        verifyResponse = await fetch(`${BACKEND_URL}/auth/verify`, {
+          method: "POST",
+          headers: { 
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "ngrok-skip-browser-warning": "true"
+          },
+          body: JSON.stringify({
+            wallet_address: address,
+            signature: signature,
+            timestamp: timestamp,
+          }),
+        })
+      } catch (fetchError: any) {
+        throw new Error(`Network error on verify: Could not reach backend.`)
+      }
       
       if (!verifyResponse.ok) {
         // Try to get the actual error message from the backend

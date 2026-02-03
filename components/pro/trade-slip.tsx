@@ -133,16 +133,32 @@ export function TradeSlip({ thesis }: { thesis: Thesis }) {
       }
 
       // 3. Fetch Pear's specific EIP-712 message from backend (which gets it from Pear API)
-      const messageResponse = await fetch(`${backendUrl}/auth/message/${walletAddress}`, {
-        headers: { "ngrok-skip-browser-warning": "true" }
-      });
+      let messageResponse: Response;
+      let pearMessage: any;
+      
+      try {
+        messageResponse = await fetch(`${backendUrl}/auth/message/${walletAddress}`, {
+          method: "GET",
+          headers: { 
+            "ngrok-skip-browser-warning": "true",
+            "Accept": "application/json",
+          }
+        });
+      } catch (fetchError: any) {
+        throw new Error(`Network error: Could not reach backend at ${backendUrl}. Is your ngrok tunnel running? (${fetchError.message})`);
+      }
       
       if (!messageResponse.ok) {
         const errorText = await messageResponse.text();
-        throw new Error(`Failed to get signing message: ${errorText}`);
+        throw new Error(`Backend error ${messageResponse.status}: ${errorText}`);
       }
       
-      const pearMessage = await messageResponse.json();
+      try {
+        pearMessage = await messageResponse.json();
+      } catch (parseError) {
+        const rawText = await messageResponse.clone().text();
+        throw new Error(`Invalid JSON from backend. Raw response: ${rawText.substring(0, 200)}`);
+      }
       // Extract the timestamp from Pear's response
       const timestamp = pearMessage.timestamp;
       if (!timestamp) {
@@ -178,25 +194,37 @@ export function TradeSlip({ thesis }: { thesis: Thesis }) {
       }) as string;
       
       // 5. Send signature + timestamp to backend to exchange for JWT token
-      const verifyResponse = await fetch(`${backendUrl}/auth/verify`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "ngrok-skip-browser-warning": "true",
-        },
-        body: JSON.stringify({
-          wallet_address: walletAddress,
-          signature: signature,
-          timestamp: timestamp,
-        }),
-      });
+      let verifyResponse: Response;
+      let authResult: any;
+      
+      try {
+        verifyResponse = await fetch(`${backendUrl}/auth/verify`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json",
+            "ngrok-skip-browser-warning": "true",
+          },
+          body: JSON.stringify({
+            wallet_address: walletAddress,
+            signature: signature,
+            timestamp: timestamp,
+          }),
+        });
+      } catch (fetchError: any) {
+        throw new Error(`Network error on verify: Could not reach backend. (${fetchError.message})`);
+      }
       
       if (!verifyResponse.ok) {
         const errorText = await verifyResponse.text();
-        throw new Error(`Auth failed: ${verifyResponse.status} - ${errorText}`);
+        throw new Error(`Verify failed ${verifyResponse.status}: ${errorText}`);
       }
       
-      const authResult = await verifyResponse.json();
+      try {
+        authResult = await verifyResponse.json();
+      } catch (parseError) {
+        throw new Error("Invalid JSON response from verify endpoint");
+      }
       
       if (authResult.access_token || authResult.success) {
         setIsAuthorized(true);
