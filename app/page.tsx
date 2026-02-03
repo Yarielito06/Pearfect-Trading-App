@@ -1,4 +1,5 @@
 "use client"
+// Env vars updated - using NEXT_PUBLIC_BACKEND_URL
 
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
