@@ -309,7 +309,7 @@ export default function AgentPage() {
                 </div>
 
                 {/* Timestamp */}
-                <div className="text-center text-xs text-muted-foreground">
+                <div className="text-center text-xs text-muted-foreground" suppressHydrationWarning>
                   {mounted && prediction.asOf ? `As of ${new Date(prediction.asOf).toLocaleString()}` : "Loading..."}
                 </div>
 
