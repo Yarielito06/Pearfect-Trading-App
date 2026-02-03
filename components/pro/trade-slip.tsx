@@ -63,6 +63,7 @@ export function TradeSlip({ thesis }: { thesis: Thesis }) {
   const [executing, setExecuting] = useState(false)
   const [error, setError] = useState<TradeError | null>(null)
   const [txHash, setTxHash] = useState<string | null>(null)
+  const [accessToken, setAccessToken] = useState<string | null>(null)
   const [lastReceipt, setLastReceipt] = useState<{
     tradeId: string
     timestamp: number
@@ -226,7 +227,10 @@ export function TradeSlip({ thesis }: { thesis: Thesis }) {
         throw new Error("Invalid JSON response from verify endpoint");
       }
       
-      if (authResult.access_token || authResult.success) {
+      if (authResult.access_token) {
+        setAccessToken(authResult.access_token);
+        setIsAuthorized(true);
+      } else if (authResult.success) {
         setIsAuthorized(true);
       } else {
         throw new Error("No access token received from backend");
@@ -275,7 +279,7 @@ export function TradeSlip({ thesis }: { thesis: Thesis }) {
     }
 
     try {
-      const { data, error: apiError } = await api.executeProTrade(payload)
+      const { data, error: apiError } = await api.executeProTrade(payload, accessToken)
 
       // Handle API errors - 500 from Pear typically means insufficient funds
       if (apiError) {

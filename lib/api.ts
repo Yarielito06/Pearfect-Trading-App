@@ -83,7 +83,7 @@ export const api = {
     horizon?: string
     conviction?: string
     thesisType?: string
-  }) =>
+  }, accessToken?: string | null) =>
     fetchApi<{
       success: boolean
       tradeId: string
@@ -98,6 +98,7 @@ export const api = {
     }>("/api/pro/execute", {
       method: "POST",
       body: JSON.stringify(payload),
+      headers: accessToken ? { "Authorization": `Bearer ${accessToken}` } : {},
     }),
 
   getProPositions: (address: string) =>
