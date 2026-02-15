@@ -21,7 +21,7 @@ export function Navbar() {
   ]
 
   return (
-    <nav className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-sm">
+    <nav suppressHydrationWarning className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-sm">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2">
@@ -30,8 +30,7 @@ export function Navbar() {
             alt="Pearfect logo"
             width={32}
             height={32}
-            style={{ width: "auto", height: "auto" }}
-            className="h-8 object-contain"
+            style={{ width: "auto", height: "32px" }}
           />
           <span className="text-lg font-semibold tracking-tight text-foreground">Pearfect</span>
         </Link>
