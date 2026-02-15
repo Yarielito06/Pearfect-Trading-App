@@ -11,12 +11,12 @@ import { useAppStore } from "@/lib/store"
 export default function LandingPage() {
   const router = useRouter()
   const { setMode, wallet, setWallet, initDemoWallet } = useAppStore()
-  const [showModal, setShowModal] = useState(false)
+  const [mounted, setMounted] = useState(false)
   const [connecting, setConnecting] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
-    setShowModal(true)
+    setMounted(true)
     initDemoWallet()
   }, [initDemoWallet])
 
@@ -171,7 +171,7 @@ export default function LandingPage() {
         <div className="absolute -bottom-1/4 -right-1/4 h-1/2 w-1/2 rounded-full bg-secondary/5 blur-3xl" />
       </div>
 
-      <Dialog open={showModal} onOpenChange={setShowModal}>
+      {mounted && <Dialog open onOpenChange={() => {}}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader className="text-center">
             <div className="mx-auto mb-4 flex items-center justify-center">
@@ -180,7 +180,8 @@ export default function LandingPage() {
                 alt="Pearfect logo"
                 width={80}
                 height={80}
-                className="h-auto w-auto object-contain"
+                style={{ width: "auto", height: "auto" }}
+                className="object-contain"
               />
             </div>
             <DialogTitle className="text-2xl text-foreground">Choose Your Mode</DialogTitle>
@@ -227,7 +228,8 @@ export default function LandingPage() {
             </button>
           </div>
         </DialogContent>
-      </Dialog>
+      </Dialog>}
+
 
       <div className="relative z-0 text-center">
         <h1 className="text-balance text-4xl font-bold tracking-tight text-foreground sm:text-5xl">

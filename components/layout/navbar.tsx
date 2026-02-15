@@ -30,7 +30,8 @@ export function Navbar() {
             alt="Pearfect logo"
             width={32}
             height={32}
-            className="h-8 w-auto object-contain"
+            style={{ width: "auto", height: "auto" }}
+            className="h-8 object-contain"
           />
           <span className="text-lg font-semibold tracking-tight text-foreground">Pearfect</span>
         </Link>
