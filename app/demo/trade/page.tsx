@@ -93,28 +93,26 @@ export default function DemoTradePage() {
       {/* No credits modal */}
       {isNoCredits && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-background/80 backdrop-blur-sm">
-          <Card className="max-w-md">
-            <CardHeader className="text-center">
-              <CardTitle className="text-foreground">Demo Credits Exhausted</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4 text-center">
-              <p className="text-muted-foreground">{"You've used all 100 demo credits."}</p>
-              <p className="text-sm text-muted-foreground">Reset your wallet to get 100 fresh credits, or go Pro to trade with real assets.</p>
-              <div className="flex flex-col gap-2">
-                <Button
-                  onClick={() => {
-                    resetDemoWallet()
-                  }}
-                  className="bg-primary text-primary-foreground hover:bg-primary/90"
-                >
-                  <RefreshCw className="mr-2 h-4 w-4" />
-                  Reset Wallet (100 Credits)
-                </Button>
-                <Button variant="outline" onClick={() => router.push("/")}>
-                  <Wallet className="mr-2 h-4 w-4" />
-                  Go Pro (Connect Wallet)
-                </Button>
+          <Card className="max-w-md border-primary/20">
+            <CardHeader className="text-center pb-2">
+              <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+                <Wallet className="h-6 w-6 text-primary" />
               </div>
+              <CardTitle className="text-xl text-foreground">{"You're Ready for the Real Thing"}</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-5 text-center">
+              <p className="text-muted-foreground">
+                {"You've traded through all 100 demo credits. Nice work! Connect your wallet to start trading with real assets and earn real returns."}
+              </p>
+              <Button
+                onClick={() => router.push("/")}
+                size="lg"
+                className="w-full bg-primary text-primary-foreground hover:bg-primary/90 text-base font-semibold"
+              >
+                <Wallet className="mr-2 h-5 w-5" />
+                Connect Wallet and Go Pro
+              </Button>
+              <p className="text-xs text-muted-foreground/60">Pair trading with real tokens on Hyperliquid</p>
             </CardContent>
           </Card>
         </div>
