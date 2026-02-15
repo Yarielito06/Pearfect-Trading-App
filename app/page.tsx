@@ -11,11 +11,12 @@ import { useAppStore } from "@/lib/store"
 export default function LandingPage() {
   const router = useRouter()
   const { setMode, wallet, setWallet, initDemoWallet } = useAppStore()
-  const [showModal, setShowModal] = useState(true)
+  const [showModal, setShowModal] = useState(false)
   const [connecting, setConnecting] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
+    setShowModal(true)
     initDemoWallet()
   }, [initDemoWallet])
 
@@ -179,7 +180,7 @@ export default function LandingPage() {
                 alt="Pearfect logo"
                 width={80}
                 height={80}
-                className="object-contain"
+                className="h-auto w-auto object-contain"
               />
             </div>
             <DialogTitle className="text-2xl text-foreground">Choose Your Mode</DialogTitle>
