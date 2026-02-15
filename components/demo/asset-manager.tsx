@@ -7,20 +7,18 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Slider } from "@/components/ui/slider"
 import { Badge } from "@/components/ui/badge"
-
-interface Asset {
-  symbol: string
-  weight: number
-}
+import { useAppStore, type BasketAsset } from "@/lib/store"
 
 const AVAILABLE_TOKENS = ["HYPE", "ETH", "BTC", "SOL", "ARB", "OP", "PEPE", "DOGE", "SHIB", "LINK"]
 
 export function AssetManager() {
-  const [longAssets, setLongAssets] = useState<Asset[]>([{ symbol: "HYPE", weight: 50 }])
-  const [shortAssets, setShortAssets] = useState<Asset[]>([{ symbol: "ETH", weight: 50 }])
+  const longAssets = useAppStore((s) => s.demoLongAssets)
+  const shortAssets = useAppStore((s) => s.demoShortAssets)
+  const setLongAssets = useAppStore((s) => s.setDemoLongAssets)
+  const setShortAssets = useAppStore((s) => s.setDemoShortAssets)
   const [addingTo, setAddingTo] = useState<"long" | "short" | null>(null)
 
-  const normalizeWeights = (assets: Asset[]): Asset[] => {
+  const normalizeWeights = (assets: BasketAsset[]): BasketAsset[] => {
     const total = assets.reduce((sum, a) => sum + a.weight, 0)
     if (total === 0) return assets
     return assets.map((a) => ({
@@ -29,7 +27,7 @@ export function AssetManager() {
     }))
   }
 
-  const equalizeWeights = (assets: Asset[]): Asset[] => {
+  const equalizeWeights = (assets: BasketAsset[]): BasketAsset[] => {
     const weight = Math.round(100 / assets.length)
     return assets.map((a, i) => ({
       ...a,
@@ -62,7 +60,7 @@ export function AssetManager() {
   const longTotal = longAssets.reduce((sum, a) => sum + a.weight, 0)
   const shortTotal = shortAssets.reduce((sum, a) => sum + a.weight, 0)
 
-  const renderAssetList = (assets: Asset[], side: "long" | "short", accentColor: string) => (
+  const renderAssetList = (assets: BasketAsset[], side: "long" | "short", accentColor: string) => (
     <Card className={`border-2 ${side === "long" ? "border-primary/30" : "border-secondary/30"}`}>
       <CardHeader className="pb-2">
         <div className="flex items-center justify-between">

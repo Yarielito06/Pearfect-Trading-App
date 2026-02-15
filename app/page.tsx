@@ -172,7 +172,7 @@ export default function LandingPage() {
       </div>
 
       {mounted && <Dialog open onOpenChange={() => {}}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-md animate-in fade-in-0 zoom-in-95 duration-500">
           <DialogHeader className="text-center">
             <div className="mx-auto mb-4 flex items-center justify-center">
               <Image

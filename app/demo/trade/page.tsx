@@ -98,17 +98,21 @@ export default function DemoTradePage() {
               <CardTitle className="text-foreground">Demo Credits Exhausted</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4 text-center">
-              <p className="text-muted-foreground">{"You've used all 100 demo credits. Ready to trade for real?"}</p>
+              <p className="text-muted-foreground">{"You've used all 100 demo credits."}</p>
+              <p className="text-sm text-muted-foreground">Reset your wallet to get 100 fresh credits, or go Pro to trade with real assets.</p>
               <div className="flex flex-col gap-2">
                 <Button
-                  onClick={() => router.push("/")}
+                  onClick={() => {
+                    resetDemoWallet()
+                  }}
                   className="bg-primary text-primary-foreground hover:bg-primary/90"
                 >
+                  <RefreshCw className="mr-2 h-4 w-4" />
+                  Reset Wallet (100 Credits)
+                </Button>
+                <Button variant="outline" onClick={() => router.push("/")}>
                   <Wallet className="mr-2 h-4 w-4" />
                   Go Pro (Connect Wallet)
-                </Button>
-                <Button variant="outline" onClick={resetDemoWallet}>
-                  Reset Demo Wallet
                 </Button>
               </div>
             </CardContent>
