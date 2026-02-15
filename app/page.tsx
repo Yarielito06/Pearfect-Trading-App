@@ -175,14 +175,15 @@ export default function LandingPage() {
         <DialogContent className="sm:max-w-md animate-in fade-in-0 zoom-in-95 duration-500">
           <DialogHeader className="text-center">
             <div className="mx-auto mb-4 flex items-center justify-center">
-              <Image
-                src="/images/pear-20logo.png"
-                alt="Pearfect logo"
-                width={80}
-                height={80}
-                style={{ width: "auto", height: "auto" }}
-                className="object-contain"
-              />
+              <div className="relative h-20 w-20">
+                <Image
+                  src="/images/pear-20logo.png"
+                  alt="Pearfect logo"
+                  fill
+                  sizes="80px"
+                  className="object-contain"
+                />
+              </div>
             </div>
             <DialogTitle className="text-2xl text-foreground">Choose Your Mode</DialogTitle>
             <DialogDescription className="text-muted-foreground">
