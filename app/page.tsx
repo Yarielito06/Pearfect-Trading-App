@@ -10,7 +10,7 @@ import { useAppStore } from "@/lib/store"
 
 export default function LandingPage() {
   const router = useRouter()
-  const { setMode, wallet, setWallet, initDemoWallet } = useAppStore()
+  const { setMode, wallet, setWallet, initDemoWallet, resetDemoWallet, demoWallet } = useAppStore()
   const [mounted, setMounted] = useState(false)
   const [connecting, setConnecting] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -21,6 +21,9 @@ export default function LandingPage() {
   }, [initDemoWallet])
 
   const handleDemoMode = () => {
+    if (!demoWallet || demoWallet.demoCredits === 0) {
+      resetDemoWallet()
+    }
     setMode("demo")
     router.push("/demo/trade")
   }
