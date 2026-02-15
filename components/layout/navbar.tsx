@@ -30,7 +30,7 @@ export function Navbar() {
             alt="Pearfect logo"
             width={32}
             height={32}
-            className="h-8 w-8 object-contain"
+            className="h-8 w-auto object-contain"
           />
           <span className="text-lg font-semibold tracking-tight text-foreground">Pearfect</span>
         </Link>
