@@ -21,17 +21,19 @@ export function Navbar() {
   ]
 
   return (
-    <nav className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-sm">
+    <nav suppressHydrationWarning className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-sm">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2">
-          <Image
-            src="/images/pear-20logo.png"
-            alt="Pearfect logo"
-            width={32}
-            height={32}
-            className="h-8 w-8 object-contain"
-          />
+          <div className="relative h-8 w-8">
+            <Image
+              src="/images/pear-20logo.png"
+              alt="Pearfect logo"
+              fill
+              sizes="32px"
+              className="object-contain"
+            />
+          </div>
           <span className="text-lg font-semibold tracking-tight text-foreground">Pearfect</span>
         </Link>
 

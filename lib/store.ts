@@ -49,6 +49,11 @@ export interface Avatar {
   streakBadgesUnlocked: string[]
 }
 
+export interface BasketAsset {
+  symbol: string
+  weight: number
+}
+
 export interface SelectedPair {
   base: string
   quote: string
@@ -74,6 +79,12 @@ interface AppState {
   demoPositions: DemoPosition[]
   addDemoPosition: (position: Omit<DemoPosition, "id" | "createdAt">) => void
   clearDemoPositions: () => void
+
+  // Demo baskets (Asset Manager state)
+  demoLongAssets: BasketAsset[]
+  demoShortAssets: BasketAsset[]
+  setDemoLongAssets: (assets: BasketAsset[]) => void
+  setDemoShortAssets: (assets: BasketAsset[]) => void
 
   // Pro wallet
   wallet: { connected: boolean; address: string | null }
@@ -179,6 +190,8 @@ export const useAppStore = create<AppState>()(
             createdAt: Date.now(),
           },
           demoPositions: [],
+          demoLongAssets: [{ symbol: "HYPE", weight: 50 }],
+          demoShortAssets: [{ symbol: "ETH", weight: 50 }],
         })
       },
       deductDemoCredits: (amount) => {
@@ -203,6 +216,12 @@ export const useAppStore = create<AppState>()(
           })
         }
       },
+
+      // Demo baskets
+      demoLongAssets: [{ symbol: "HYPE", weight: 50 }],
+      demoShortAssets: [{ symbol: "ETH", weight: 50 }],
+      setDemoLongAssets: (assets) => set({ demoLongAssets: assets }),
+      setDemoShortAssets: (assets) => set({ demoShortAssets: assets }),
 
       // Demo positions
       demoPositions: [],
@@ -303,6 +322,8 @@ export const useAppStore = create<AppState>()(
         theme: state.theme,
         demoWallet: state.demoWallet,
         demoPositions: state.demoPositions,
+        demoLongAssets: state.demoLongAssets,
+        demoShortAssets: state.demoShortAssets,
         wallet: state.wallet,
         selectedPair: state.selectedPair,
         avatar: state.avatar,

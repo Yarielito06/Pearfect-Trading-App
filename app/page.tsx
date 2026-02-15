@@ -11,11 +11,12 @@ import { useAppStore } from "@/lib/store"
 export default function LandingPage() {
   const router = useRouter()
   const { setMode, wallet, setWallet, initDemoWallet } = useAppStore()
-  const [showModal, setShowModal] = useState(true)
+  const [mounted, setMounted] = useState(false)
   const [connecting, setConnecting] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
+    setMounted(true)
     initDemoWallet()
   }, [initDemoWallet])
 
@@ -170,17 +171,19 @@ export default function LandingPage() {
         <div className="absolute -bottom-1/4 -right-1/4 h-1/2 w-1/2 rounded-full bg-secondary/5 blur-3xl" />
       </div>
 
-      <Dialog open={showModal} onOpenChange={setShowModal}>
-        <DialogContent className="sm:max-w-md">
+      {mounted && <Dialog open onOpenChange={() => {}}>
+        <DialogContent className="sm:max-w-md animate-in fade-in-0 zoom-in-95 duration-500">
           <DialogHeader className="text-center">
             <div className="mx-auto mb-4 flex items-center justify-center">
-              <Image
-                src="/images/pear-20logo.png"
-                alt="Pearfect logo"
-                width={80}
-                height={80}
-                className="object-contain"
-              />
+              <div className="relative h-20 w-20">
+                <Image
+                  src="/images/pear-20logo.png"
+                  alt="Pearfect logo"
+                  fill
+                  sizes="80px"
+                  className="object-contain"
+                />
+              </div>
             </div>
             <DialogTitle className="text-2xl text-foreground">Choose Your Mode</DialogTitle>
             <DialogDescription className="text-muted-foreground">
@@ -226,7 +229,8 @@ export default function LandingPage() {
             </button>
           </div>
         </DialogContent>
-      </Dialog>
+      </Dialog>}
+
 
       <div className="relative z-0 text-center">
         <h1 className="text-balance text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
